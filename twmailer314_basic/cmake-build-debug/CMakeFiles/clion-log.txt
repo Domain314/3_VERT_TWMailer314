@@ -1,0 +1,4 @@
+/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/opt/clion/bin/ninja/linux/ninja -G Ninja -S /home/domain314/CLionProjects/twmailer314_basic -B /home/domain314/CLionProjects/twmailer314_basic/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/domain314/CLionProjects/twmailer314_basic/cmake-build-debug

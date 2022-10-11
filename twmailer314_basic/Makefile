@@ -1,0 +1,20 @@
+#############################################################################################
+# Makefile
+#############################################################################################
+# G++ is part of GCC (GNU compiler collection) and is a compiler best suited for C++
+# Compiler Flags: https://linux.die.net/man/1/g++
+CC=g++
+CFLAGS=-g -Wall -Wextra -O -std=c++2a -I -pthread
+
+rebuild: clean all
+all: server client
+
+clean:
+	clear
+	rm -f ./server/server ./client/client
+
+server:
+	${CC} ${CFLAGS} -o server314/server server314/main.c server314/ServerLogic.c
+
+client:
+	${CC} ${CFLAGS} -o client314/client client314/main.c
