@@ -3,4 +3,12 @@ project(twmailer314_basic)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(twmailer314_basic client314/main.c server314/main.c server314/ServerLogic.h server314/ServerLogic.c)
+
+include_directories(/usr/include/readline)
+
+
+add_executable(twmailer314_basic client314/main.c client314/ClientLogic.h client314/ClientLogic.c shared/getopt314.h)
+#add_executable(twmailer314_basic client314/main.c server314/main.c server314/ServerLogic.h server314/ServerLogic.c)
+
+
+target_link_libraries(twmailer314_basic readline)

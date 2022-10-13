@@ -1,3 +1,0 @@
-/home/domain314/CLionProjects/twmailer314_basic/cmake-build-debug/CMakeFiles/twmailer314_basic.dir
-/home/domain314/CLionProjects/twmailer314_basic/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/domain314/CLionProjects/twmailer314_basic/cmake-build-debug/CMakeFiles/rebuild_cache.dir

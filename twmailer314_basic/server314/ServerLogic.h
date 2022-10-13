@@ -15,5 +15,4 @@ void clientCommunication(void *data, const int* abortRequested);
 
 
 
-
 #endif //TWMAILER314_BASIC_SERVERLOGIC_H
