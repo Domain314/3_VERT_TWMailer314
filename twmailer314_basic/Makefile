@@ -17,4 +17,4 @@ server:
 	${CC} ${CFLAGS} -o server314/server server314/main.c server314/ServerLogic.c
 
 client:
-	${CC} ${CFLAGS} -o client314/client client314/main.c client314/ClientLogic.c -lreadline
+	${CC} ${CFLAGS} -o client314/client client314/main.cpp client314/ClientLogic.cpp -lreadline

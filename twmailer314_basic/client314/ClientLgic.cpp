@@ -1,12 +1,13 @@
-#include "ClientLogic.h"
+#include "ClientLgic.hpp"
 
-enum COMMAND_MODE g_mode = NONE;
+char* sendPrompts[4] = {"Sender: ", "Receiver: ", "Subject: ", "Message: "};
 
 int initClient(int argc, char **argv) {
     int create_socket;
     char recvBuffer[BUF];
     char* inputBuffer;
     char* sendMessage;
+
 //    char shell_prompt[100];
     struct sockaddr_in address;
 
@@ -118,45 +119,49 @@ void inputBufferAdjustment(char* buffer, int size) {
 }
 
 int digestInput(char* buffer, char* sendMessage) {
+    switch (buffer[0]) {
+        case 'S':
+            if (strcmp(buffer, "SEND") == 0) {
+                if (sendLogic(buffer, sendMessage)) {
+
+                }
+                break;
+            }
+        case 'L':
+            if (strcmp(buffer, "LIST") == 0) {
+                printf("LISTT");
+                g_mode = LIST;
+                break;
+            }
+        case 'R':
+            if (strcmp(buffer, "READ") == 0) {
+                printf("READD");
+                g_mode = READ;
+                break;
+            }
+        case 'D':
+            if (strcmp(buffer, "DEL") == 0) {
+                printf("DELL");
+                g_mode = DEL;
+                break;
+            }
+        case 'Q':
+        case 'q':
+            if (strcmp(buffer, "QUIT") == 0 || strcmp(buffer, "quit") == 0) {
+                printf("QUITT");
+                g_mode = QUIT;
+                break;
+            }
+        default:
+            printf("Command not Found.\n");
+            printHelp();
+            return 0;
+    }
+    return 1;
+
     if (g_mode == NONE) {
         printf("NONE\n");
-        switch (buffer[0]) {
-            case 'S':
-                if (strcmp(buffer, "SEND") == 0) {
-                    printf("SENDD");
-                    g_mode = SEND;
-                    break;
-                }
-            case 'L':
-                if (strcmp(buffer, "LIST") == 0) {
-                    printf("LISTT");
-                    g_mode = LIST;
-                    break;
-                }
-            case 'R':
-                if (strcmp(buffer, "READ") == 0) {
-                    printf("READD");
-                    g_mode = READ;
-                    break;
-                }
-            case 'D':
-                if (strcmp(buffer, "DEL") == 0) {
-                    printf("DELL");
-                    g_mode = DEL;
-                    break;
-                }
-            case 'Q':
-            case 'q':
-                if (strcmp(buffer, "QUIT") == 0 || strcmp(buffer, "quit") == 0) {
-                    printf("QUITT");
-                    g_mode = QUIT;
-                    break;
-                }
-            default:
-                printf("Command not Found.\n");
-                printHelp();
 
-        }
         return 0;
     } else {
         switch (g_mode) {
@@ -174,7 +179,20 @@ int digestInput(char* buffer, char* sendMessage) {
     return 1;
 }
 
-int sendLogic() {
+int sendLogic(char* buffer, char* sendMessage) {
+//    int leng = strlen(buffer);
+//    sendMessage = malloc(strlen(buffer)+1);
+//    strcpy(sendMessage, buffer);
+//    sendMessage[strlen(buffer)] = "§";
+////    sendMessage[strlen(buffer)+1] = "\0";
+//    for (int i = 0; i < 4; ++i) {
+//        buffer = readline(sendPrompts[i]);
+//        int len = strlen(sendMessage)+strlen(buffer)+1;
+//        sendMessage = (char*)malloc(len);
+////        strcpy(sendMessage, sendMessage);
+//        strcat(sendMessage, buffer);
+//        printf("buffer: %s\n", sendMessage);
+//    }
     return 0;
 
 }
