@@ -1,14 +1,13 @@
 
 #include "FileOrganizer.hpp"
 
-FileOrganizer::FileOrganizer() {
-
+FileOrganizer::FileOrganizer(string* dir) {
+    mailSpoolDir = new string(*dir);
 }
 
-void FileOrganizer::addCommandToQueue(string *command, string* answer) {
+void FileOrganizer::addCommandToQueue(string *command, string* answer, string* dir) {
     try {
         pushStack(command, answer);
-//        queueCommands->insert(queueCommands->end(),*command);
         queueCounter++;
         if (!isSearching) {
             initSearch();
@@ -145,10 +144,10 @@ bool FileOrganizer::quitLogic(Node* node) {
 
 
 bool FileOrganizer::deleteMail(string* name, string* mesNum) {
-    if (name == nullptr || mesNum == nullptr) return false;
+    if (name == nullptr || mesNum == nullptr || mailSpoolDir == nullptr) return false;
 
-    fs::path pathIn{"./database/" + *name + "/in/" + *mesNum};
-    fs::path pathOut{"./database/" + *name + "/out/" + *mesNum};
+    fs::path pathIn{*mailSpoolDir + *name + "/in/" + *mesNum};
+    fs::path pathOut{*mailSpoolDir + *name + "/out/" + *mesNum};
     if (fs::exists(pathIn)) {
         return fs::remove(pathIn) > 0;
     } else if (fs::exists(pathOut)) {
@@ -161,8 +160,8 @@ bool FileOrganizer::deleteMail(string* name, string* mesNum) {
 string *FileOrganizer::constructReadMail(string* name, string* mesNum) {
     if (name == nullptr || mesNum == nullptr) return new string("ERR");
 
-    fs::path pathIn{"./database/" + *name + "/in/" + *mesNum};
-    fs::path pathOut{"./database/" + *name + "/out/" + *mesNum};
+    fs::path pathIn{*mailSpoolDir + *name + "/in/" + *mesNum};
+    fs::path pathOut{*mailSpoolDir + *name + "/out/" + *mesNum};
     if (fs::exists(pathIn)) {
         return extractMail(&pathIn);
     } else if (fs::exists(pathOut)) {
@@ -190,8 +189,8 @@ string *FileOrganizer::extractMail(fs::path* path) {
 
 string *FileOrganizer::constructListResult(string *name) {
     int inCounter = 0, outCounter = 0;
-    string* in = searchDirectory(new fs::path{"./database/" + *name + "/in"}, &inCounter);
-    string* out = searchDirectory(new fs::path{"./database/" + *name + "/out"}, &outCounter);
+    string* in = searchDirectory(new fs::path{*mailSpoolDir + *name + "/in"}, &inCounter);
+    string* out = searchDirectory(new fs::path{*mailSpoolDir + *name + "/out"}, &outCounter);
     if (inCounter == 0 && outCounter == 0) {
         printf("empty\n");
         return (string*)"0";
@@ -255,13 +254,13 @@ void FileOrganizer::initUserDir(string *name) {
 }
 
 void FileOrganizer::createUserDir(string *dir) {
-    fs::path path{("./database/" + *dir)};
+    fs::path path{(*mailSpoolDir + *dir)};
     fs::create_directories(path);
     delete(dir);
 }
 
 void FileOrganizer::saveMail(string* dir, Node* mail) {
-    fs::path path{("./database/" + *dir)};
+    fs::path path{(*mailSpoolDir + *dir)};
     ofstream ofs(path);
     Node* temp = mail->next;
     while (temp != nullptr) {

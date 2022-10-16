@@ -1,16 +1,11 @@
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
+#include <cstdlib>
+#include <cstdio>
+#include <csignal>
 
 #include "ServerLogic.hpp"
 #include "FileOrganizer.hpp"
-
-#define PORT 6543
 
 int g_abortRequested = 0;
 int greeting_socket = -1; // make vector<int> ?
@@ -24,9 +19,16 @@ int main(int argc, char **argv) {
         perror("signal can not be registered");
         return EXIT_FAILURE;
     }
-    FileOrganizer* organizer = new FileOrganizer();
+    int port = 6543;
+    string dir = "./database/";
+    if (argc == 3) {
+        port = stoi(argv[1]);
+        dir = argv[2];
+    }
 
-    ServerLogic* server = new ServerLogic(argc, argv, &g_abortRequested, &greeting_socket, &communication_socket, organizer);
+    FileOrganizer* organizer = new FileOrganizer(&dir);
+
+    ServerLogic* server = new ServerLogic(port, &g_abortRequested, &greeting_socket, &communication_socket, organizer);
     delete(server);
     delete(organizer);
     return 0;
@@ -35,7 +37,7 @@ int main(int argc, char **argv) {
 
 void signalHandler(int sig) {
     if (sig == SIGINT) {
-        printf("abort Requested... "); // ignore error
+        printf("abort Requested... ");
         g_abortRequested = 1;
 
         // shutdown

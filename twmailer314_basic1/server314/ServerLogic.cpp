@@ -1,11 +1,12 @@
 #include <csignal>
 #include "ServerLogic.hpp"
 
-ServerLogic::ServerLogic(int argc, char** argv, int* g_abortRequested, int* greeting_socket, int* communication_socket, FileOrganizer* fileOrganizer) {
+ServerLogic::ServerLogic(int port, int* g_abortRequested, int* greeting_socket, int* communication_socket, FileOrganizer* fileOrganizer) {
     this->fileOrganizer = fileOrganizer;
     this->g_abortRequested = g_abortRequested;
     this->greeting_socket = greeting_socket;
     this->communication_socket = communication_socket;
+    g_port = port;
     initSocket();
 }
 
@@ -43,7 +44,7 @@ void ServerLogic::initSocket() {
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(g_port);
 
     // Assign address with port to socket
     if (bind(*greeting_socket, (struct sockaddr *)&address, sizeof(address)) == -1) {
@@ -127,7 +128,7 @@ void ServerLogic::clientCommunication(void *data, const int *abortRequested) {
 
 
 
-        fileOrganizer->addCommandToQueue(new string(buffer), answer);
+        fileOrganizer->addCommandToQueue(new string(buffer), answer, &g_dir);
 
 
 

@@ -6,6 +6,10 @@ ClientLogic::ClientLogic(int argc, char **argv) {
 }
 
 void ClientLogic::iniClient(int argc, char **argv) {
+    if (argc == 3) {
+        g_ip = argv[1];
+        g_port = stoi(argv[2]);
+    }
     int create_socket;
     char recvBuffer[BUF];
     string* inputBuffer;
@@ -21,9 +25,9 @@ void ClientLogic::iniClient(int argc, char **argv) {
     // init address
     memset(&address, 0, sizeof(address)); // init storage with 0
     address.sin_family = AF_INET;         // IPv4
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(g_port);
     if (argc < 2) {
-        inet_aton("127.0.0.1", &address.sin_addr);
+        inet_aton(g_ip.c_str(), &address.sin_addr);
     } else {
         inet_aton(argv[1], &address.sin_addr);
     }

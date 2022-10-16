@@ -11,7 +11,6 @@
 #include <cstring>
 #include <unistd.h>
 
-#define PORT 6543
 #define BUF 1024
 
 using namespace std;
@@ -22,6 +21,9 @@ public:
 
 private:
     bool isQuit = false;
+    string g_ip = "127.0.0.1";
+    int g_port = 6543;
+
     void iniClient(int argc, char **argv);
     static int receiveErrorHandling(int size);
 

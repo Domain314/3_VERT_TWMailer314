@@ -12,16 +12,14 @@
 
 #include "FileOrganizer.hpp"
 
-#define PORT 6543
+//#define PORT 6543
 #define BUF 1024
 
 using namespace std;
 
-typedef void (*AnswerCallback)(int*);
-
 class ServerLogic {
 public:
-    ServerLogic(int argc, char** argv, int* g_abortRequested, int* greeting_socket, int* communication_socket, FileOrganizer* fileOrganizer);
+    ServerLogic(int port, int* g_abortRequested, int* greeting_socket, int* communication_socket, FileOrganizer* fileOrganizer);
 
 private:
     FileOrganizer* fileOrganizer;
@@ -29,6 +27,8 @@ private:
     int* greeting_socket;
     int* communication_socket;
     string* answer = new string("");
+    uint g_port = 6543;
+    string g_dir = "./database/";
 
     void initSocket();
     void clientCommunication(void *data, const int* abortRequested);
