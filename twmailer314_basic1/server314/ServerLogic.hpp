@@ -17,6 +17,8 @@
 
 using namespace std;
 
+typedef void (*AnswerCallback)(int*);
+
 class ServerLogic {
 public:
     ServerLogic(int argc, char** argv, int* g_abortRequested, int* greeting_socket, int* communication_socket, FileOrganizer* fileOrganizer);
@@ -26,9 +28,13 @@ private:
     int* g_abortRequested;
     int* greeting_socket;
     int* communication_socket;
+    string* answer = new string("");
 
     void initSocket();
     void clientCommunication(void *data, const int* abortRequested);
+
+    static void sendAnswer(const int* current_socket, string* answer);
+    static void clearBuffer(char* buf);
 
 
 };

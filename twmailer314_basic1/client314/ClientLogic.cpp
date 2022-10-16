@@ -39,21 +39,22 @@ void ClientLogic::iniClient(int argc, char **argv) {
     // ignore return value of printf
     printf("Connection with server (%s) established\n", inet_ntoa(address.sin_addr));
 
-    int length = recv(create_socket, recvBuffer, BUF - 1, 0);
+    int length = (int)recv(create_socket, recvBuffer, BUF - 1, 0);
     // Receive Data
     if (!receiveErrorHandling(length)) { return; }
     else {
         recvBuffer[length] = '\0';
         printf("%s", recvBuffer);
     }
+    clearBuffer(recvBuffer);
 
     // enable 'tab-completion'
     rl_bind_key('\t', rl_complete);
 
-    while(1) {
+    while(true) {
         inputBuffer = new string();
         readInput((char*)PROMPT_MES.at("empty").c_str(), inputBuffer);
-        if (inputBuffer->size() != 0) {
+        if (!inputBuffer->empty()) {
 
             // digestInput will return true, when sendMessage is done.
             if (digestInput(inputBuffer)) {
@@ -63,10 +64,11 @@ void ClientLogic::iniClient(int argc, char **argv) {
                 }
 
                 // Receive Feedback
-                if (!receiveErrorHandling(recv(create_socket, recvBuffer, BUF - 1, 0))) { break; }
+                if (!receiveErrorHandling((int)recv(create_socket, recvBuffer, BUF - 1, 0))) { break; }
                 else {
                     recvBuffer[strlen(recvBuffer)] = '\0';
                     printf("<< %s\n", recvBuffer); // ignore error
+                    clearBuffer(recvBuffer);
                 }
             } else {
                 if (isQuit) { break; }
@@ -117,7 +119,6 @@ bool ClientLogic::digestInput(string *input) {
                 printf("Quit now.\n");
                 isQuit = true;
                 return false;
-                break;
             }
         default:
             printf("Command not Found.\n");
@@ -131,7 +132,7 @@ bool ClientLogic::sendLogic(string *sendMessage) {
     for (int i = 0; i < 4; ++i) {
         readInput((char *) SEND_PROMPTS.at(i).c_str(), sendMessage);
     }
-    while (1) {
+    while (true) {
         if (!readInput((char*)PROMPT_MES.at("empty").c_str(), sendMessage, BUF-sendMessage->size()-8)) {
             break;
         }
@@ -182,7 +183,7 @@ bool ClientLogic::readInput(char* prompt, string *destination, int maxSize) {
     *input = readline(prompt);
     if (*input == ".") { delete(input); return false; }
     if (input->size() > maxSize) {
-        printError("line-too-long");
+        printError((string*)"line-too-long");
         printf("%d characters left.\n", maxSize);
     } else {
         destination->append(*input);
@@ -229,8 +230,14 @@ void ClientLogic::printHelp() {
     printf("---------------------------------------------------------------------------\n");
 }
 
-void ClientLogic::printError(string error) {
-    printf("%s", ERROR_MES.at(error).c_str());
+void ClientLogic::printError(string* error) {
+    printf("%s", ERROR_MES.at(*error).c_str());
+}
+
+void ClientLogic::clearBuffer(char* buf) {
+    for (int i = 1; i < BUF; ++i) {
+        buf[i] = '\0';
+    }
 }
 
 

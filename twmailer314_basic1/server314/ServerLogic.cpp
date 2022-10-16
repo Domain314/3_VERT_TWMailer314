@@ -82,8 +82,6 @@ void ServerLogic::initSocket() {
         clientCommunication(communication_socket, g_abortRequested); // returnValue can be ignored
         *communication_socket = -1;
     }
-
-    return;
 }
 
 void ServerLogic::clientCommunication(void *data, const int *abortRequested) {
@@ -92,15 +90,16 @@ void ServerLogic::clientCommunication(void *data, const int *abortRequested) {
     int *current_socket = (int *)data;
 
     // Send Welcome
-    strcpy(buffer, "Welcome to Server314!\r\nPlease enter your commands...\r\n");
+    strcpy(buffer, "Welcome to Server314!\r\nPlease enter your command.\r\n");
     if (send(*current_socket, buffer, strlen(buffer), 0) == -1) {
         perror("send failed");
         return;
     }
 
     do {
+        clearBuffer(buffer);
         // Receive
-        size = recv(*current_socket, buffer, BUF - 1, 0);
+        size = (int)recv(*current_socket, buffer, BUF - 1, 0);
         if (size == -1) {
             if (*abortRequested) {
                 perror("recv error after aborted");
@@ -128,14 +127,24 @@ void ServerLogic::clientCommunication(void *data, const int *abortRequested) {
 
 
 
-        fileOrganizer->addCommandToQueue(new string(buffer));
+        fileOrganizer->addCommandToQueue(new string(buffer), answer);
 
 
 
-        if (send(*current_socket, "OK", 3, 0) == -1) {
-            perror("send answer failed");
-            return;
+        int counter = 10;
+        while (answer->empty()) {
+            sleep(1);
+            counter--;
+            if (counter < 0) {
+                *answer = "TIMEOUT\n";
+                break;
+            }
         }
+        sendAnswer(current_socket, answer);
+        printf("answer: %s\n", answer->c_str());
+
+
+
     } while (strcmp(buffer, "quit") != 0 && !*abortRequested);
 
     // closes/frees the descriptor if not already
@@ -148,7 +157,20 @@ void ServerLogic::clientCommunication(void *data, const int *abortRequested) {
         }
         *current_socket = -1;
     }
+}
 
-    return;
+void ServerLogic::sendAnswer(const int* current_socket, string* fsAnswer) {
+    printf("%s\n", fsAnswer->c_str());
+    if (send(*current_socket, fsAnswer->c_str(), fsAnswer->size(), 0) == -1) {
+        perror("send answer failed");
+        return;
+    }
+    *fsAnswer = "";
+}
+
+void ServerLogic::clearBuffer(char* buf) {
+    for (int i = 1; i < BUF; ++i) {
+        buf[i] = '\0';
+    }
 }
 

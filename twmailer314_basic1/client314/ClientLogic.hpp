@@ -1,7 +1,6 @@
 #ifndef TWMAILER314_BASIC_CLIENTLOGIC_HPP
 #define TWMAILER314_BASIC_CLIENTLOGIC_HPP
 
-//#include <readline/history.h>
 #include <cstdio>
 #include <sys/socket.h>
 #include <readline/readline.h>
@@ -27,18 +26,20 @@ private:
     static int receiveErrorHandling(int size);
 
     bool digestInput(string* input);
-    bool sendLogic(string* input);
-    bool listLogic(string* input);
-    bool readLogic(string* input);
-    bool delLogic(string* input);
 
+    static bool sendLogic(string* input);
+    static bool listLogic(string* input);
+    static bool readLogic(string* input);
+    static bool delLogic(string* input);
 
-    void closeDescriptor(int* create_socket);
-    void printHelp();
-    void printError(string error);
+    static void closeDescriptor(int* create_socket);
+    static void printHelp();
+    static void printError(string* error);
 
-    void readInput(char* prompt, string* destination);
-    bool readInput(char* prompt, string* destination, int maxSize);
+    static void readInput(char* prompt, string* destination);
+    static bool readInput(char* prompt, string* destination, int maxSize);
+
+    static void clearBuffer(char* buf);
 };
 
 

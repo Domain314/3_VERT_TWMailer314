@@ -17,24 +17,25 @@ namespace fs = std::filesystem;
 
 using namespace std;
 
-// Normal distribution. a = average, f = fluctuation
-static int randomInt(int a, int f)
+// Real distribution. [min - max)
+static int randomInt(int min, int max)
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    std::normal_distribution<> dis(a, f);
+    std::uniform_real_distribution<> dis(min, max);
     return std::abs((int)dis(gen));
 }
 
 struct Node {
     string* data;
+    string* answer;
     Node* next = nullptr;
 };
 
 class FileOrganizer {
 public:
     FileOrganizer();
-    bool addCommandToQueue(string* command);
+    void addCommandToQueue(string* command, string* answer);
 
 private:
     atomic_uint queueCounter = 0;
@@ -45,29 +46,38 @@ private:
     mutex popMutex;
 
     void initSearch();
-    void digestCommand(string* command);
+    static void digestCommand(Node* node);
 
-    void sendLogic(string* command);
-    void listLogic();
-    void readLogic();
-    void delLogic();
-    void quitLogic();
+    static bool sendLogic(string* command);
+    static bool listLogic(Node* node);
+    static bool readLogic(Node* node);
+    static bool delLogic(Node* node);
+    static bool quitLogic(Node* node);
 
-    void initUserDir(string* name);
-    void createUserDir(string* dir);
-    void initNewMail(string* sender, string* receiver, string* subject, string* message);
-    void saveMail(string* dir, Node* mail);
-    Node* constructNewMail(string* sender, string* receiver, string* subject, string* message);
+    static void initUserDir(string* name);
+    static void createUserDir(string* dir);
+    static void initNewMail(string* sender, string* receiver, string* subject, string* message);
+    static void saveMail(string* dir, Node* mail);
+    static Node* constructNewMail(string* sender, string* receiver, string* subject, string* message);
 
+    static string* extractNextSubstring(int* thisDivider, int* nextDivider, string* command);
+    static string* extractRemainingSubstring(int* thisDivider, int* nextDivider, string* command);
 
-    string* extractNextSubstring(int* thisDivider, int* nextDivider, string* command);
-    string* extractRemainingSubstring(int* thisDivider, int* nextDivider, string* command);
+    static string* constructListResult(string* name);
+    static string* searchDirectory(fs::path* path, int* counter);
+    static string* extractID(string* path);
+    static string* extractSubject(fs::path* path);
 
-    void pushStack(string* command);
-    void pushList(string* str, Node* head);
-    Node* getLast(Node* head);
+    static string* constructReadMail(string* name, string* mesNum);
+    static string* extractMail(fs::path* path);
+
+    static bool deleteMail(string* name, string* mesNum);
+
+    void pushStack(string* command, string* answer);
+    static void pushList(string* str, Node* head);
+    static Node* getLast(Node* head);
     bool isStackEmpty();
-    string* popStack();
+    Node* popStack();
 
 
 };
