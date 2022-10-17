@@ -178,6 +178,9 @@ void FileOrganizer::saveMail(string* dir, Node* mail) {
 }
 
 
+/****************
+ *  READ LOGIC  *
+ ****************/
 string *FileOrganizer::constructReadMail(string* name, string* mesNum) {
     if (name == nullptr || mesNum == nullptr) return new string("ERR");
 
@@ -206,8 +209,9 @@ string *FileOrganizer::extractMail(fs::path* path) {
 }
 
 
-
-
+/****************
+ *  LIST LOGIC  *
+ ****************/
 string *FileOrganizer::constructListResult(string *name) {
     int inCounter = 0, outCounter = 0;
     string* in = searchDirectory(new fs::path{*mailSpoolDir + *name + "/in"}, &inCounter);
@@ -264,12 +268,26 @@ string *FileOrganizer::extractSubject(fs::path* path) {
 }
 
 
+/***************
+ *  DEL LOGIC  *
+ ***************/
+bool FileOrganizer::deleteMail(string* name, string* mesNum) {
+    if (name == nullptr || mesNum == nullptr || mailSpoolDir == nullptr) return false;
+
+    fs::path pathIn{*mailSpoolDir + *name + "/in/" + *mesNum};
+    fs::path pathOut{*mailSpoolDir + *name + "/out/" + *mesNum};
+    if (fs::exists(pathIn)) {
+        return fs::remove(pathIn) > 0;
+    } else if (fs::exists(pathOut)) {
+        return fs::remove(pathOut) > 0;
+    }
+    return false;
+}
 
 
-
-
-
-
+/*******************
+ *  MAIL CREATION  *
+ *******************/
 void FileOrganizer::initNewMail(string* sender, string* receiver, string* subject, string* message) {
     if (sender == nullptr || receiver == nullptr || subject == nullptr) return;
 
@@ -296,9 +314,9 @@ Node *FileOrganizer::constructNewMail(string* sender, string* receiver, string* 
 }
 
 
-
-
-// Logic Helper Function
+/**********************
+ *  HELPER FUNCTIONS  *
+ **********************/
 string* FileOrganizer::extractNextSubstring(int *thisDivider, int *nextDivider, string *command) {
     try {
         *thisDivider += *nextDivider+2;
@@ -323,22 +341,9 @@ string* FileOrganizer::extractRemainingSubstring(int *thisDivider, int *nextDivi
     return new string(message);
 }
 
-
-bool FileOrganizer::deleteMail(string* name, string* mesNum) {
-    if (name == nullptr || mesNum == nullptr || mailSpoolDir == nullptr) return false;
-
-    fs::path pathIn{*mailSpoolDir + *name + "/in/" + *mesNum};
-    fs::path pathOut{*mailSpoolDir + *name + "/out/" + *mesNum};
-    if (fs::exists(pathIn)) {
-        return fs::remove(pathIn) > 0;
-    } else if (fs::exists(pathOut)) {
-        return fs::remove(pathOut) > 0;
-    }
-    return false;
-}
-
-
-// STACK FUNCTIONS
+/*********************
+ *  STACK FUNCTIONS  *
+ *********************/
 void FileOrganizer::pushStack(string* command, string* answer) {
     Node* temp = new Node();
 
@@ -375,6 +380,9 @@ Node* FileOrganizer::popStack() {
     }
 }
 
+/**************************
+ *  LINKED LIST FUNTIONS  *
+ **************************/
 void FileOrganizer::pushList(string* str, Node* head) {
     Node* temp = new Node();
 
@@ -391,9 +399,6 @@ void FileOrganizer::pushList(string* str, Node* head) {
 
 Node *FileOrganizer::getLast(Node *head) {
     Node* temp = head;
-    while (temp->next != nullptr) {
-        temp = temp->next;
-    }
+    while (temp->next != nullptr) { temp = temp->next; }
     return temp;
 }
-

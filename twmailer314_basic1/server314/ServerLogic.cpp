@@ -10,7 +10,7 @@ ServerLogic::ServerLogic(int port, int* g_abortRequested, int* greeting_socket, 
     initSocket();
 }
 
-// initialize all socket relevant fields. 
+// Initialize all socket relevant fields. 
 void ServerLogic::initSocket() {
     socklen_t addrlen;
     struct sockaddr_in address, cliaddress;

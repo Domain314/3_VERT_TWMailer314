@@ -37,6 +37,8 @@ struct Node {
 class FileOrganizer {
 public:
     FileOrganizer(string* dir);
+
+    // QUEUE LOGIC 1
     void addCommandToQueue(string* command, string* answer, string* dir);
 
 private:
@@ -47,34 +49,44 @@ private:
     mutex popMutex;
     string* mailSpoolDir{};
 
+    // QUEUE LOGIC 2
     void initSearch();
     void digestCommand(Node* node);
 
+    // COMMAND LOGICS
     bool sendLogic(string* command);
     bool listLogic(Node* node);
     bool readLogic(Node* node);
     bool delLogic(Node* node);
     static bool quitLogic(Node* node);
 
+    // FILESYSTEM WRITE
     void initUserDir(string* name);
     void createUserDir(string* dir);
-    void initNewMail(string* sender, string* receiver, string* subject, string* message);
     void saveMail(string* dir, Node* mail);
-    static Node* constructNewMail(string* sender, string* receiver, string* subject, string* message);
-
+    
+    // LIST LOGIC
     string* constructListResult(string* name);
     static string* searchDirectory(fs::path* path, int* counter);
     static string* extractID(string* path);
     static string* extractSubject(fs::path* path);
 
+    // READ LOGIC
     string* constructReadMail(string* name, string* mesNum);
     static string* extractMail(fs::path* path);
 
+    // DEL LOGIC
     bool deleteMail(string* name, string* mesNum);
 
+    // MAIL CREATION
+    void initNewMail(string* sender, string* receiver, string* subject, string* message);
+    static Node* constructNewMail(string* sender, string* receiver, string* subject, string* message);
+
+    // HELPER FUNCTIONS
     static string* extractNextSubstring(int* thisDivider, int* nextDivider, string* command);
     static string* extractRemainingSubstring(int* thisDivider, int* nextDivider, string* command);
 
+    // STACK & LINKED LIST FUNCTIONS
     void pushStack(string* command, string* answer);
     static void pushList(string* str, Node* head);
     static Node* getLast(Node* head);
