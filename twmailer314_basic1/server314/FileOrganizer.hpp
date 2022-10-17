@@ -26,6 +26,8 @@ static int randomInt(int min, int max) {
     return std::abs((int)dis(gen));
 }
 
+// Node struct to link mails and answers
+// see pushStack() & pushList()
 struct Node {
     string* data{};
     string* answer{};
@@ -60,9 +62,6 @@ private:
     void saveMail(string* dir, Node* mail);
     static Node* constructNewMail(string* sender, string* receiver, string* subject, string* message);
 
-    static string* extractNextSubstring(int* thisDivider, int* nextDivider, string* command);
-    static string* extractRemainingSubstring(int* thisDivider, int* nextDivider, string* command);
-
     string* constructListResult(string* name);
     static string* searchDirectory(fs::path* path, int* counter);
     static string* extractID(string* path);
@@ -73,13 +72,14 @@ private:
 
     bool deleteMail(string* name, string* mesNum);
 
+    static string* extractNextSubstring(int* thisDivider, int* nextDivider, string* command);
+    static string* extractRemainingSubstring(int* thisDivider, int* nextDivider, string* command);
+
     void pushStack(string* command, string* answer);
     static void pushList(string* str, Node* head);
     static Node* getLast(Node* head);
     bool isStackEmpty();
     Node* popStack();
-
-
 };
 
 

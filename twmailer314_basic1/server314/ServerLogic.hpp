@@ -12,7 +12,6 @@
 
 #include "FileOrganizer.hpp"
 
-//#define PORT 6543
 #define BUF 1024
 
 using namespace std;
