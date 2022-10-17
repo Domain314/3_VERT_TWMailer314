@@ -13,7 +13,6 @@ void ClientLogic::iniClient(int argc, char **argv) {
     int create_socket;
     char recvBuffer[BUF];
     string* inputBuffer;
-//    string* sendMessage;
     struct sockaddr_in address;
 
     // Create socket
@@ -166,8 +165,6 @@ bool ClientLogic::delLogic(string *input) {
 }
 
 
-
-
 void ClientLogic::readInput(char* prompt, string *destination) {
     string* input = new string();
     *input = readline(prompt);
@@ -196,7 +193,6 @@ bool ClientLogic::readInput(char* prompt, string *destination, int maxSize) {
     delete(input);
     return true;
 }
-
 
 
 int ClientLogic::receiveErrorHandling(int size) {
